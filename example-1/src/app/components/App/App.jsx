@@ -1,19 +1,21 @@
-import React from "react";
+import React, {lazy, Suspense} from "react";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
-import BasicPage from "../../../client/BasicPages/pages";
-import AllPostsPage from "../../../client/Posts/pages/AllPostsPage";
-import PostsSearchPage from "../../../client/Posts/pages/PostsSearchPage";
-import SinglePostPage from "../../../client/Posts/pages/SinglePostPage";
-import NotFoundPage from "../NotFoundPage";
 import Navbar from "../../../client/Navbar/components/Navbar";
 
 import './App.css';
+
+const BasicPage = lazy(()=> import("../../../client/BasicPages/pages"));
+const AllPostsPage = lazy(()=> import("../../../client/Posts/pages/AllPostsPage"));
+const PostsSearchPage = lazy(()=>import("../../../client/Posts/pages/PostsSearchPage"));
+const SinglePostPage = lazy(()=>import("../../../client/Posts/pages/SinglePostPage"));
+const NotFoundPage = lazy(()=>import("../NotFoundPage"));
 
 function App() {
     return (
         <Router>
             <Navbar/>
+            <Suspense fallback={<p>Page loading....</p>}>
             <Switch>
                 <Route path="/" exact>
                     <BasicPage title="Home page"/>
@@ -25,6 +27,7 @@ function App() {
                 <Route path="/contacts" exact render={() => <BasicPage title="Contacts Page" />}/>
                 <Route component={NotFoundPage}/>
             </Switch>
+            </Suspense>
         </Router>
     );
 }

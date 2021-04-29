@@ -1,11 +1,9 @@
-import React, {Component} from 'react';
+import React, {Component, lazy, Suspense} from 'react';
 import qs from "qs";
-
-import PostListItem from "../../components/PostListItem";
 
 import {getAllPosts} from "../../service/posts-service";
 
-import styles from "./AllPostsPage.module.css"
+const PostList = lazy(() => import ("../../components/PostList"));
 
 class AllPostsPage extends Component {
     state = {
@@ -46,15 +44,15 @@ class AllPostsPage extends Component {
 
     render() {
         const {loading, error, posts} = this.state;
-        const postElements = posts.map((post) =>
-            <PostListItem key={post.id} {...post} />)
+
         return (
             <div>
-                {loading && <p>Loading ...</p>}
-                {error && <p>Загрузка не удалась</p>}
-                <ul className={styles.list}>
-                    {postElements}
-                </ul>
+                {loading && <p>Posts loading ...</p>}
+                {error && <p>Не удалось загрузить посты</p>}
+                {!loading && !error && 
+                <Suspense fallback={<p>Loading ...</p>}>
+                    <PostList list={posts} />
+                </Suspense>}
             </div>
         )
     }
